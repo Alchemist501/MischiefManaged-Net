@@ -1,1 +1,30 @@
+# Virtual Environment
 MischiefManaged
+
+# Log files
+logs/
+*.log
+
+# Database files
+*.db
+
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual Environment
+*.venv
+env/
+ENV/
+
+# Database files
+*.sqlite
+*.sqlite3
+
+# IDE / Editor specific
+.idea/
+.vscode/
+*.swp
