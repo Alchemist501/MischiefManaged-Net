@@ -1,15 +1,18 @@
 # File: src/core/discover.py
 
+import logging
 from scapy.all import srp, Ether, ARP
-# Note: When running from the project root, the import will be different.
-# For now, we'll import relative to its own folder for testing inside the VM.
 from ..utils.db import setup_database, save_devices
+from ..utils.logger import setup_logger  # Import the new logger setup
+
+# Set up the logger
+logger = setup_logger()
 
 def discover_devices(ip_range):
     """
     Discovers devices on the network using an ARP scan.
     """
-    print(f"[*] Scanning for devices in {ip_range}...")
+    logger.info(f"Scanning for devices in {ip_range}...")
     arp_request = ARP(pdst=ip_range)
     broadcast = Ether(dst="ff:ff:ff:ff:ff:ff")
     arp_request_broadcast = broadcast / arp_request
@@ -22,20 +25,15 @@ def discover_devices(ip_range):
 
 # This part is for standalone testing.
 if __name__ == "__main__":
-    # 1. Set up the database first
-    print("[*] Initializing database...")
-    # The DB file will be created relative to where you run the script.
+    logger.info("Initializing database...")
     setup_database()
     
-    # 2. Define the network range and run the scan
-    # This is the range for your internal Hogwarts network
     network_range = "192.168.10.0/24" 
     found_devices = discover_devices(network_range)
     
-    # 3. Save the results to the database
     if found_devices:
-        print(f"[+] Found {len(found_devices)} devices. Saving to database...")
+        logger.info(f"Found {len(found_devices)} devices. Saving to database...")
         save_devices(found_devices)
-        print("[+] Database updated.")
+        logger.info("Database updated.")
     else:
-        print("[-] No devices found.")
+        logger.warning("No devices found.")
