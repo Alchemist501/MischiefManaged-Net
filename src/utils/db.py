@@ -56,3 +56,12 @@ def save_network_event(event_data):
         VALUES (:timestamp, :src_ip, :dst_ip, :protocol, :src_port, :dst_port, :packet_size)
         """, event_data)
         conn.commit()
+
+def get_all_devices():
+    """Retrieves all devices from the database."""
+    with sqlite3.connect(DATABASE_FILE) as conn:
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM devices ORDER BY last_seen DESC")
+        devices = [dict(row) for row in cursor.fetchall()]
+        return devices
